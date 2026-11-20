@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  --color-obsidian: #07090e;
+  --color-panel: #0c1017;
+  --color-panel-2: #111722;
+  --color-line: #1c2431;
+  --color-ink: #e6edf5;
+  --color-mute: #8a97a8;
+  --color-nx-cyan: #06b6d4;
+  --color-nx-amber: #f59e0b;
+  --color-nx-crimson: #f43f5e;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --animate-toast-in: toast-in 220ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  --animate-blink: blink 1s steps(2, start) infinite;
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes blink {
+    to { visibility: hidden; }
+  }
+}
+
+@layer base {
+  html, body, #root { height: 100%; }
+  body {
+    @apply bg-obsidian text-ink font-sans antialiased;
+    color-scheme: dark;
+  }
+  ::selection { background: rgb(6 182 212 / 0.35); }
+  * { scrollbar-width: thin; scrollbar-color: #1c2431 transparent; }
+  :focus-visible { outline: 2px solid var(--color-nx-cyan); outline-offset: 2px; }
+}
+
+@utility nx-card {
+  @apply rounded-xl border border-line bg-panel;
+}
+@utility nx-btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
+}
+@utility nx-btn-primary {
+  @apply nx-btn bg-nx-cyan text-obsidian hover:bg-cyan-300;
+}
+@utility nx-btn-ghost {
+  @apply nx-btn border border-line bg-panel-2 text-ink hover:border-nx-cyan/50 hover:text-white;
+}
+@utility nx-btn-danger {
+  @apply nx-btn bg-nx-crimson text-white hover:bg-rose-400;
+}
+@utility nx-input {
+  @apply w-full rounded-lg border border-line bg-obsidian px-3 py-2 font-mono text-sm text-ink placeholder:text-mute/60 focus:border-nx-cyan/60 focus:outline-none;
+}
+@utility nx-chip {
+  @apply inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider;
+}
+@utility nx-grid-bg {
+  background-image:
+    linear-gradient(rgb(28 36 49 / 0.45) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(28 36 49 / 0.45) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Day 3: packet travelling across the network wire (App Architecture Lab) */
+@keyframes nx-packet {
+  from { left: 0%; opacity: 1; }
+  90% { opacity: 1; }
+  to { left: calc(100% - 12px); opacity: 0.4; }
+}

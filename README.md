@@ -4,15 +4,15 @@ A modular, dark-mode learning platform for full-stack engineering and security. 
 
 **Stack:** Vite · React 19 · TypeScript · Tailwind CSS v4 · Supabase (Auth + Postgres + RLS)
 
-| Track | Day 1 lessons | Live lab |
+| Track | Lessons | Live lab |
 |---|---|---|
-| Web Development | Critical Rendering Path, Event Loop | **JS Event Loop & React Render Visualizer** *(Day 3)* |
-| App Development | Unidirectional State, Offline Outbox Sync | **Mobile Offline Sync & API Inspector** *(Day 3)* |
-| Game Development | Fixed-Timestep Game Loop, A* Pathfinding | **2D Canvas Engine Sandbox** *(Day 2)* |
-| AI / ML & LLM Engineering | Gradient Descent, Backprop, Tokens & Prompt Injection | **Neural Net + Token X-Ray**, **Red-Team Prompt Injection & Attention X-Ray** *(Day 2)* |
-| Cybersecurity & RE | SQL Injection, Binary Triage, x86 CMP/Jcc | **CrackMe Sandbox** |
+| Web Development | **Full 30-chapter curriculum** *(Day 6)* (how the web works → rendering & CSS → JS engine → TypeScript → React 19 → backend APIs → auth & multi-tenancy → PostgreSQL → caching/build/deploy → testing & system design) | **JS Event Loop & React Render Visualizer** *(Day 3)* |
+| App Development | **Full 27-chapter curriculum** *(Day 7)* (OS lifecycle & rendering engines → UI/navigation/gestures → state → SQLite persistence → offline-first sync → resilient networking → mobile security → permissions/push/links → profiling & store shipping) | **Mobile Offline Sync & API Inspector** *(Day 3)* |
+| Game Development | **Full 28-chapter curriculum** *(Day 8)* (game loop & fixed timestep → vectors/matrices/quaternions → ECS & data-oriented design → physics & collision → pathfinding & AI → GPU pipeline, PBR & WebGPU/WGSL → input, camera & game feel → scenes, pooling & saves → multiplayer netcode) | **2D Canvas Engine Sandbox** *(Day 2)* |
+| AI / ML & LLM Engineering | **Full 32-chapter curriculum** *(Day 5)* (ML math → classical ML → deep learning → tokens/embeddings → transformers → inference → fine-tuning → prompting → RAG → agents/MCP → evals & AI security) | **Neural Net + Token X-Ray**, **Red-Team Prompt Injection & Attention X-Ray** *(Day 2)* |
+| Cybersecurity & RE | **Full 28-chapter curriculum** (foundations → web → crypto → x86-64 → binaries → RE → memory safety → anti-analysis) | **CrackMe Sandbox** |
 
-There are 12 published lessons plus 45 roadmap chapters, which appear as locked "coming soon" items.
+There are **145 published lessons worth 17,270 XP and 0 roadmap chapters**: all five tracks are fully authored end to end with zero locked or "coming soon" items. They are **Web Development** (30 chapters), **App Development** (27), **Game Development** (28), **AI / ML & LLM Engineering** (32) and **Cybersecurity & Reverse Engineering** (28).
 
 ---
 
@@ -29,6 +29,163 @@ The app runs immediately in **local mode**. XP, streaks, lessons and CTF flags a
 npm run build      # type-check + production build → dist/
 npm run preview    # serve the build
 ```
+
+## What's new in Day 8 (final milestone: 100% unlocked)
+
+The **Game Development** track (Track 3) is now a complete zero-to-engine-architect curriculum: **28 published chapters across 9 modules**. With it, **all five tracks are fully authored: 145 chapters, 17,270 XP, 0 locked or "coming soon" items anywhere**. Day 8 changed **only** Game lesson content (plus this README). The database schema, `package.json`, all 6 interactive labs, routing, UI components and the Web, App, AI and Cyber tracks are byte-for-byte unchanged, verified with SHA-256 against a snapshot of 114 files.
+
+| Track | Modules | Chapters | XP | Minutes | Lab embeds |
+|---|---|---|---|---|---|
+| Web Development | 10 | 30 | 3,570 | 679 | 3 |
+| App Development | 9 | 27 | 3,200 | 572 | 6 |
+| Game Development | 9 | 28 | 3,570 | 666 | 11 |
+| AI / ML & LLM Engineering | 11 | 32 | 3,750 | 703 | 8 |
+| Cybersecurity & Reverse Engineering | 8 | 28 | 3,180 | 556 | 7 |
+| **Total** | **47** | **145** | **17,270** | **3,176** | **35** |
+
+The two original Game lesson IDs (`game-fixed-timestep`, `game-astar`) are kept, so existing XP and completions still count. The original module IDs `game-core`, `game-ai` and `game-gpu` are kept too.
+
+Every chapter has:
+- an "Explain Like Water" analogy, then 6 intuition steps with exact maths, memory layouts or frame-by-frame traces
+- an architecture flow callout and an ASCII diagram at the top of Tab 1
+- a 3-tab Code Explorer:
+  1. **Core Engine Algorithm / From Scratch:** runnable TypeScript that asserts its own output.
+  2. **Production Cache-Friendly / Engine Pattern:** TypeScript on TypedArrays (zero per-frame allocation), C++20 or WGSL.
+  3. **Classic Bug & Fix:** for example the √2 diagonal speed exploit, per-frame `x += 5`, unbounded catch-up (spiral of death), `Math.random` desync, explicit-Euler energy gain, centre-only grid insertion, unnormalised SAT axes, end-position-only bullets (tunneling), Manhattan on 8-way grids, FSM flicker, a depth buffer cleared to 0, lighting in sRGB space, vec3 padding mismatches, missing coyote time, frame-rate dependent lerp, listener leaks, per-frame allocation GC stutter, raw Map serialization, sequence wraparound, snap-without-replay rubber-banding, and shallow rollback snapshots.
+- takeaways ending in a practice drill
+
+How the examples were verified:
+- All 28 TypeScript "From Scratch" samples run under Node and pass `tsc --strict`. Among other things they check that the fixed timestep reaches an identical state after 240 steps at 60 Hz, 144 Hz and jittery frame times, that seeded replays match by checksum, vector and quaternion maths (gimbal lock reproduced at 90° pitch, shortest-path slerp), the MVP pipeline down to pixel coordinates, AABB and SAT (including an AABB false positive), quadtree and uniform-grid pair sets identical to the O(N²) result, A* matching Dijkstra's optimal cost on every reachable random map while expanding about half the nodes, camera damping that gives the same result at 60 Hz, 144 Hz and with jitter, and prediction/reconciliation and rollback that end in exactly the server's or the perfect-information state.
+- All 5 WGSL shaders are compiled and validated by a real WebGPU implementation (wgpu with the naga compiler, on a Vulkan software driver). The particle compute shader was also run on that device, and its output matched Tab 1's CPU reference to within 4e-9.
+- All 3 C++20 samples compile with `g++ -std=c++20 -Wall -Werror`. All other Tab 2 and Tab 3 samples are syntax-checked.
+
+Lab integration:
+- The **2D Canvas Engine Sandbox** (`labId: 'game-engine'`) is embedded with `labMode: 'physics'` in the game loop, physics, collision and game-feel chapters (9 chapters), and with `labMode: 'astar'` in the two pathfinding chapters. The lab opens on the matching tab.
+
+Modules: (1) The Game Loop & Fixed Timestep (variable dt, accumulator & interpolation, determinism), (2) Game Mathematics (vectors/dot/cross, MVP matrices, quaternions & gimbal lock), (3) ECS & Data-Oriented Design (inheritance → ECS, SoA vs AoS & cache lines), (4) Physics & Collision (integrators & Verlet, broad phase, AABB/SAT, CCD & tunneling), (5) Pathfinding & Game AI (BFS/Dijkstra/flow fields, A* & heuristics, FSMs & behavior trees), (6) Graphics & the GPU (pipeline & rasterization, Blinn-Phong vs PBR, frustum culling & batching, WebGPU/WGSL compute), (7) Input, Camera & Game Feel (input buffering & coyote time, camera damping/shake/hitstop, event bus & audio), (8) Scenes, Memory & Persistence (scene stack, object pooling, save/load & branching dialogue), (9) Multiplayer Netcode (architecture & transports, prediction & reconciliation, rollback/interpolation/lag compensation).
+
+Files added/modified in Day 8:
+- `src/data/lessons/game.ts` (now imports the 9 module files)
+- `src/data/lessons/game/m1-game-loop.ts`, `m2-math.ts`, `m3-ecs.ts`, `m4-physics.ts`, `m5-ai.ts`, `m6-graphics.ts`, `m7-feel.ts`, `m8-architecture.ts`, `m9-netcode.ts` (new)
+- `README.md`
+
+## What's new in Day 7
+
+The **App Development** track (Track 2) is now a complete zero-to-production mobile engineering curriculum: **27 published chapters across 9 modules, with no locked or "coming soon" items left in the track**. Day 7 changed **only** App lesson content (plus this README). The database schema, `package.json`, all 6 interactive labs, routing, UI components and the Web, AI, Game and Cyber tracks are byte-for-byte unchanged, verified with SHA-256 against a snapshot of 105 files.
+
+The two original App lesson IDs (`app-unidirectional-state`, `app-offline-outbox`) are kept, so existing XP and completions still count.
+
+Every chapter has:
+- an "Explain Like Water" analogy and 6 intuition steps that trace the UI thread, OS lifecycle, SQLite and the sync queue
+- an architecture flow callout and an ASCII thread or sync-sequence diagram
+- a 3-tab Code Explorer:
+  1. **Core Mobile Pattern / From Scratch:** runnable TypeScript that asserts its own output.
+  2. **Production Resilience Pattern:** React Native 0.88 / Expo SDK 58 code using React Navigation 7, Reanimated 4 + Gesture Handler, TanStack Query, Zustand, MMKV, expo-sqlite, op-sqlite (SQLCipher), expo-secure-store, expo-local-authentication, expo-notifications, expo-image, expo-camera, expo-location, expo-background-task and expo-updates.
+  3. **Classic Mobile Bug & Fix:** for example tokens in AsyncStorage, 5,000 rows in a ScrollView, a fresh idempotency key per retry, drop-and-recreate "migrations", an in-memory outbox, LWW on device clocks, saving drafts only on unmount, JS-thread PanResponder gestures, hard-coded safe-area padding, a static OTA runtime version, a hard-coded SQLCipher key, deep links that execute actions, push tokens never refreshed, and a leaked GPS watcher.
+- takeaways ending in a practice drill
+
+How the examples were verified:
+- All 27 TypeScript "From Scratch" samples run under Node and pass `tsc --strict`. They cover outbox coalescing and FIFO flushing on a real SQLite file that survives a simulated process death, full-jitter backoff ceilings with Retry-After and a circuit breaker, idempotency replay after a lost response, LWW vs version vectors vs three-way merge vs CRDTs (G-Counter, OR-Set), and more.
+- The SQLite samples run on Node's built-in SQLite (the same SQL runs unchanged in expo-sqlite/op-sqlite). They prove that WAL lets a writer commit while a reader holds a snapshot (and that rollback-journal mode does not), check `EXPLAIN QUERY PLAN` before and after an index, and run `user_version` migrations that roll back atomically on failure.
+- All Tab 2 and Tab 3 samples are syntax-checked. All client-side production samples also type-check against the real React Native, Expo and library type definitions.
+
+Lab integration:
+- The **Mobile Offline Sync & API Inspector** lab (`labId: 'app-architecture'`) is embedded in the outbox, optimistic UI, idempotency, conflict resolution and network-retry chapters, each with a `labMode` hint. The lab currently ignores `mode`; the hint documents which experiment fits.
+- The state-architecture chapter keeps its React Re-Render X-Ray embed.
+
+Modules: (1) OS Lifecycle & Rendering Engines (process death, Native vs RN New Architecture vs Flutter), (2) UI, Navigation & Gestures (navigation trees, safe areas/keyboard/adaptive layouts, UI-thread gestures), (3) State Architecture (state layers, server cache & streams, state restoration), (4) Persistence (KV vs SQLite/WAL, zero-data-loss migrations, media caching), (5) Offline-First Sync (outbox & coalescing, optimistic UI, idempotency keys, conflict resolution), (6) Networking (retries/backoff, cancellation & cursor pagination, payload efficiency), (7) Security (Keychain/Keystore & biometrics, SQLCipher & pinning, deep-link hardening), (8) Hardware, Push & Links (JIT permissions, APNs/FCM, Universal/App Links & background budgets), (9) Profiling & Shipping (virtualised lists, memory/battery, OTA vs store releases & review compliance).
+
+Files added/modified in Day 7:
+- `src/data/lessons/app.ts` (now imports the 9 module files)
+- `src/data/lessons/app/m1-platform.ts` … `m9-performance-shipping.ts` (new)
+- `README.md`
+
+## What's new in Day 6
+
+The **Web Development** track (Track 1) is now a complete zero-to-senior full-stack curriculum: **30 published chapters across 10 modules, with no locked or "coming soon" items left in the track**. Day 6 changed **only** Web lesson content (plus this README). The database schema, `package.json`, all 6 interactive labs, routing, UI components and the other four tracks are byte-for-byte unchanged, verified with SHA-256 against a snapshot of 95 files.
+
+The two original Web lesson IDs (`web-critical-rendering-path`, `web-event-loop`) are kept, so existing XP and completions still count.
+
+Every chapter has:
+- an "Explain Like Water" analogy and 6 intuition steps that trace what the browser, V8, React Fiber or the PostgreSQL planner actually does
+- an architecture flow callout and an ASCII diagram
+- a 3-tab Code Explorer:
+  1. **Core Mechanism / From Scratch:** runnable TypeScript or SQL that asserts its own output.
+  2. **Production Full-Stack Pattern:** Node/Express 5, React 19 + TanStack Query, Zod 4, jose, Argon2, Redis, BullMQ, pg, Playwright, Tailwind v4 CSS, a multi-stage Dockerfile and similar.
+  3. **Classic Bug & Fix:** for example a stale closure in `useEffect`, `React.memo` broken by unstable callbacks, `key={index}` corrupting state, async `forEach`, an N+1 loop, a LEFT JOIN turned into an INNER JOIN, non-sargable predicates, an RLS tenant leaking through a pooled connection, `VITE_` secret exposure, public caching of `/api/me`, CORS origin reflection, `jwt.decode()` used as verification, a missing OAuth `state` check, SSE chunk-boundary parsing, non-atomic rate limiting, and a CI workflow with `pull_request_target`.
+- takeaways ending in a practice drill
+
+How the examples were verified:
+- All 27 TypeScript "From Scratch" samples run under Node and are type-checked with `tsc --strict`. This includes the exact event-loop order (real `Promise`/`setTimeout`/`queueMicrotask`/`await`), closure and `this` semantics, and compile-time `@ts-expect-error` claims.
+- The 3 SQL samples (RBAC + Row Level Security, modeling & JOINs, indexes & `EXPLAIN ANALYZE` plan assertions) run on real PostgreSQL 18 via PGlite.
+- Other samples are syntax-checked (esbuild / the Postgres parser). The main React production samples also type-check against React 19 and TanStack Query 5 types.
+
+Known values checked include:
+- the RFC 6455 `Sec-WebSocket-Accept` example and the RFC 7636 PKCE test vector
+- flex grow/shrink and `fr` track sizing
+- CLS scores
+- round-trip budgets (DNS, TCP, TLS 1.2/1.3, HTTP/3)
+
+Lab integration via `labId: 'web-internals'`:
+- `labMode: 'eventloop'`: the Event Loop chapter.
+- `labMode: 'react'`: the Reconciliation & Keys and the `React.memo` / `useCallback` chapters.
+
+Modules: (1) How the Web Works (DNS/TCP/TLS, HTTP versions & status codes, CORS & cookies), (2) Rendering & Modern CSS (pixel pipeline, Flexbox vs Grid + container queries, Tailwind v4 + CLS), (3) JS Engine Internals (scope & closures, prototypes & `this`, event loop + async errors), (4) TypeScript for Production (unions & narrowing, generics/utility types/`satisfies`, runtime validation), (5) React 19 (reconciliation & keys, effects & server state, memoization, streaming AI UI), (6) Backend APIs (REST & pagination, idempotency & rate limiting, SSE vs WebSockets), (7) Auth & Multi-Tenancy (passwords/sessions/JWT rotation, OAuth + PKCE, RBAC + RLS), (8) PostgreSQL (modeling & JOINs, B-tree/GIN + EXPLAIN, transactions & N+1), (9) Caching, Build & Deploy (browser/CDN/Redis, Vite 8 + secrets, Docker + CI/CD), (10) Testing & System Design.
+
+Files added/modified in Day 6:
+- `src/data/lessons/web.ts` (now imports the 10 module files)
+- `src/data/lessons/web/m1-how-the-web-works.ts` … `m10-testing-systems.ts` (new)
+- `README.md`
+
+## What's new in Day 5
+
+The **AI / ML & LLM Engineering** track (Track 4) is now a complete zero-to-production curriculum: **32 published chapters across 11 modules, with no locked or "coming soon" items left in the track**. Day 5 changed **only** AI lesson content (plus this README); the database schema, all 6 interactive labs, routing, UI components and the other four tracks are byte-for-byte unchanged. The three original AI lesson IDs (`ai-neurons-gradient-descent`, `ai-backprop`, `ai-tokens-prompt-security`) are kept, so existing progress and XP still count.
+
+Every chapter has an "Explain Like Water" analogy, 5–6 intuition steps, an architecture flow callout, and a 3-tab Code Explorer:
+1. **From Scratch:** pure NumPy/stdlib Python or plain TypeScript. It opens with an ASCII diagram and is **self-verifying**: all 32 samples run and assert their own numbers.
+2. **Production pattern:** PyTorch, Hugging Face, PEFT/TRL, sentence-transformers, pgvector SQL, FastMCP, Pydantic, OpenTelemetry, and provider-agnostic LLM wrappers.
+3. **Common AI Bug & Fix:** for example double softmax, a missing `zero_grad`, the mask applied after softmax, the head-split reshape, temperature applied to probabilities, RoPE positions in a KV-cache loop, merging LoRA into 4-bit weights, a DPO reference that is the policy itself, a pgvector opclass mismatch, cross-tenant retrieval, MCP path traversal, non-idempotent retries, judge position bias, PII in logs, and `innerHTML` XSS.
+
+Each chapter ends with takeaways and a practice drill.
+
+Verified numbers include:
+- softmax([2, 1, 0.1]) = [0.659, 0.242, 0.099] and its cross-entropy
+- scaled dot-product attention on a 3-token example, causal and non-causal
+- cosine similarity
+- BPE merges on the classic corpus
+- RoPE relative-position invariance
+- the exact Llama-3-8B parameter count (8,030,261,248)
+- KV cache = 128 KiB/token (1 GiB at 8K tokens; 4 GiB without GQA)
+- int8/int4 weight memory
+- LoRA r = 16 counts (13.6M for q/k/v/o, 41.9M for all linear layers)
+- DPO loss 0.513
+- RRF fusion scores
+- self-consistency 0.683
+- faithfulness and context precision
+
+Lab integration via `labId` + `labMode`:
+- **Neural Network lab** (`net`): the 3 deep-learning/backprop chapters.
+- **Prompt Security lab** in **Attention X-Ray** mode (`attention`): BPE tokenization, self-attention and sampling.
+- **Prompt Security lab** in **Injection Arena** mode (`arena`): the instruction-hierarchy and AI-security chapters.
+
+Modules: (1) ML Math & Evaluation Foundations, (2) Classical ML, (3) Deep Learning & Backprop From Scratch, (4) Tokenization & Embeddings, (5) Transformer Internals (attention, MHA/GQA/RoPE, decoder block), (6) Inference, Sampling & Reasoning Models (decoding, KV cache & quantization, test-time compute), (7) Fine-Tuning & Alignment (SFT, LoRA/QLoRA, DPO/RLHF, distillation), (8) Prompt & Context Engineering, (9) Production RAG & Vector Search (chunking, hybrid search + RRF + reranking, grounding/permissions/GraphRAG/agentic RAG), (10) Agents, Tool Calling & MCP, (11) Evals, Observability & AI Security (OWASP LLM Top 10).
+
+Files added/modified in Day 5:
+- `src/data/lessons/ai.ts` (now imports the 11 module files)
+- `src/data/lessons/ai/m1-foundations.ts` … `m11-evals-security.ts` (new)
+- `README.md`
+
+## What's new in Day 4
+
+The **Cybersecurity & Reverse Engineering** track (Track 5) is now a complete zero-to-advanced curriculum: **28 published chapters across 8 modules, with no locked or "coming soon" items left in the track**. Day 4 changed **only** cyber lesson content; the database schema, all 6 interactive labs, routing, UI components and other tracks are untouched.
+
+Each chapter follows the mandatory depth: an "Explain Like Water" analogy, step-by-step intuition, an ASCII/flow architecture diagram, a 3-tab Code Explorer (Core Mechanism / Real-World Audit / Vulnerable vs. Patched), and key takeaways ending in a hands-on practice drill. All code samples were compiled/run where feasible to verify correctness (GCC 13 assembly listings, Capstone disassembly, Base64/JWT decodes, the decimal-IP SSRF trick, etc.). Reverse-engineering chapters embed the existing **CrackMe Sandbox** at the relevant level, and memory-safety / anti-analysis chapters are framed around detection, defense and isolated-VM lab practice.
+
+Modules: (1) Security Foundations & Threat Modeling, (2) Web Exploitation & Defense (SQLi, XSS+CSP, CSRF, SSRF, IDOR, JWT/sessions), (3) Applied Cryptography (AES-GCM, RSA/ECC + key exchange, Argon2/bcrypt, TLS 1.3), (4) x86-64 Assembly (registers, stack frames & calling conventions, flags & jumps, compile-and-compare), (5) Binary Formats & Static Triage (PE/ELF), (6) Static & Dynamic RE (Ghidra, GDB/x64dbg, keygen vs. patching), (7) Memory Safety & Mitigations (overflows, format strings, ASLR/DEP/canaries/PIE), (8) Anti-Analysis, Packing & Safe Lab Setup.
+
+Files added/modified in Day 4:
+- `src/data/lessons/cyber.ts` (now imports the 8 module files)
+- `src/data/lessons/cyber/m1-foundations.ts` … `m8-antianalysis.ts` (new)
 
 ## What's new in Day 3
 
@@ -107,6 +264,11 @@ nexus-cs-labs/
     │   ├── challenges.ts        # CTF catalog (hashes only)
     │   └── lessons/             # one file per track ← add content here
     │       ├── web.ts  app.ts  game.ts  ai.ts  cyber.ts
+    │       ├── web/     # m1-how-the-web-works.ts … m10-testing-systems.ts (Day 6)
+    │       ├── app/     # m1-platform.ts … m9-performance-shipping.ts (Day 7)
+    │       ├── game/    # m1-game-loop.ts … m9-netcode.ts (Day 8)
+    │       ├── ai/      # m1-foundations.ts … m11-evals-security.ts (Day 5)
+    │       └── cyber/   # m1-foundations.ts … m8-antianalysis.ts (Day 4)
     ├── components/
     │   ├── LessonView.tsx       # renders ANY Lesson object
     │   ├── CodeExplorer.tsx     # Basic / Production / Bug & Fix tabs
@@ -158,7 +320,7 @@ nexus-cs-labs/
 
 ## Adding lessons (no UI changes)
 
-Open `src/data/lessons/<track>.ts` and push a `Lesson` into a module's `lessons` array:
+Open `src/data/lessons/<track>.ts` (every track now keeps one file per module under `src/data/lessons/<track>/`, so open the module file there) and push a `Lesson` into a module's `lessons` array:
 
 ```ts
 {
@@ -181,7 +343,7 @@ Open `src/data/lessons/<track>.ts` and push a `Lesson` into a module's `lessons`
 }
 ```
 
-Then remove the matching title from that module's `planned` list. The sidebar, track page, dashboard counts, XP totals and prev/next navigation all update automatically. To add a **new track**, create `lessons/<name>.ts` and append it to `TRACKS` in `src/data/tracks.ts`.
+If the chapter was listed in a module's `planned` array, remove it from there (no track uses `planned` any more, but the UI still supports it). The sidebar, track page, dashboard counts, XP totals and prev/next navigation all update automatically. To add a **new track**, create `lessons/<name>.ts` and append it to `TRACKS` in `src/data/tracks.ts`.
 
 To add a **new lab**: create a component with a default export that accepts `LabProps` (`{ mode?: string }`), add its id to `LAB_IDS` in `src/data/types.ts`, register it in `src/labs/index.tsx`, and add an entry to `LABS` in `src/data/tracks.ts` (its `trackId` decides which sidebar track it appears under). Routing picks it up automatically.
 
